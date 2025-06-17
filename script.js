@@ -156,32 +156,65 @@ class AIImageUpscaler {
   }
 
   displayImagePreview(src, file) {
-    this.originalImageEl.src = src
-    this.originalCompare.src = src
+    // Force show image preview section first
+    this.imagePreview.classList.remove("hidden")
+    this.imagePreview.style.display = "block"
+
+    // Force clear dan set gambar dengan multiple attempts
+    this.originalImageEl.style.display = "none"
+    this.originalCompare.style.display = "none"
+
+    this.originalImageEl.src = ""
+    this.originalCompare.src = ""
+
+    // Set gambar baru dengan delay bertingkat
+    setTimeout(() => {
+      this.originalImageEl.src = src
+      this.originalImageEl.style.display = ""
+      this.originalImageEl.onload = () => {
+        console.log("✅ Original image displayed")
+      }
+    }, 100)
+
+    setTimeout(() => {
+      this.originalCompare.src = src
+      this.originalCompare.style.display = ""
+      this.originalCompare.onload = () => {
+        console.log("✅ Compare image displayed")
+      }
+    }, 150)
 
     const fileSizeKB = (file.size / 1024).toFixed(1)
     const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2)
     const sizeText = file.size > 1024 * 1024 ? `${fileSizeMB} MB` : `${fileSizeKB} KB`
 
     this.imageInfo.innerHTML = `
-            <div class="flex flex-col sm:flex-row items-center justify-center gap-3 text-center">
-                <span class="bg-cyan-500/20 px-3 py-1 rounded-lg text-xs">
-                    📐 ${this.originalImage.width} × ${this.originalImage.height}
-                </span>
-                <span class="bg-purple-500/20 px-3 py-1 rounded-lg text-xs">
-                    💾 ${sizeText}
-                </span>
-                <span class="bg-green-500/20 px-3 py-1 rounded-lg text-xs">
-                    📁 ${file.name}
-                </span>
-            </div>
-        `
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-3 text-center">
+      <span class="bg-cyan-500/20 px-3 py-1 rounded-lg text-xs">
+        📐 ${this.originalImage.width} × ${this.originalImage.height}
+      </span>
+      <span class="bg-purple-500/20 px-3 py-1 rounded-lg text-xs">
+        💾 ${sizeText}
+      </span>
+      <span class="bg-green-500/20 px-3 py-1 rounded-lg text-xs">
+        📁 ${file.name}
+      </span>
+    </div>
+  `
 
     this.originalSize.textContent = `${this.originalImage.width} × ${this.originalImage.height}`
 
-    this.imagePreview.classList.remove("hidden")
-    document.querySelector('input[name="scale"][value="2"]').checked = true
-    this.selectedScale = 2
+    // Reset dan set default scale
+    document.querySelectorAll('input[name="scale"]').forEach((radio) => {
+      radio.checked = false
+    })
+
+    setTimeout(() => {
+      document.querySelector('input[name="scale"][value="2"]').checked = true
+      this.selectedScale = 2
+    }, 200)
+
+    console.log("✅ Image preview setup completed")
   }
 
   async processImage() {
@@ -452,18 +485,99 @@ class AIImageUpscaler {
   resetApp() {
     console.log("🔄 Resetting application...")
 
+    // Reset form dan UI dengan force
     this.imageInput.value = ""
     this.imagePreview.classList.add("hidden")
     this.processingSection.classList.add("hidden")
     this.resultsSection.classList.add("hidden")
 
+    // Reset semua state
     this.originalImage = null
     this.resultImageData = null
     this.selectedScale = 2
     this.isProcessing = false
     this.originalFileName = ""
 
+    // Force clear gambar dengan multiple methods
+    if (this.originalImageEl) {
+      this.originalImageEl.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+      this.originalImageEl.removeAttribute("src")
+      this.originalImageEl.style.display = "none"
+      setTimeout(() => {
+        this.originalImageEl.style.display = ""
+      }, 100)
+    }
+
+    if (this.originalCompare) {
+      this.originalCompare.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+      this.originalCompare.removeAttribute("src")
+      this.originalCompare.style.display = "none"
+      setTimeout(() => {
+        this.originalCompare.style.display = ""
+      }, 100)
+    }
+
+    // Reset info text
+    if (this.imageInfo) {
+      this.imageInfo.innerHTML = ""
+    }
+    if (this.originalSize) {
+      this.originalSize.textContent = ""
+    }
+    if (this.upscaledSize) {
+      this.upscaledSize.textContent = ""
+    }
+
+    // Reset canvas
+    if (this.resultCanvas) {
+      const ctx = this.resultCanvas.getContext("2d")
+      ctx.clearRect(0, 0, this.resultCanvas.width, this.resultCanvas.height)
+      this.resultCanvas.width = 0
+      this.resultCanvas.height = 0
+    }
+
+    // Reset radio buttons
+    const radioButtons = document.querySelectorAll('input[name="scale"]')
+    radioButtons.forEach((radio) => {
+      radio.checked = false
+    })
+
+    // Reset progress
+    if (this.progressBar) {
+      this.progressBar.style.width = "0%"
+    }
+    if (this.progressText) {
+      this.progressText.textContent = "Initializing AI model..."
+    }
+
+    // Force refresh file input dengan cara yang lebih agresif
+    const parent = this.imageInput.parentNode
+    const newInput = document.createElement("input")
+    newInput.type = "file"
+    newInput.id = "imageInput"
+    newInput.accept = "image/*"
+    newInput.className = "hidden"
+
+    parent.removeChild(this.imageInput)
+    parent.appendChild(newInput)
+    this.imageInput = newInput
+
+    // Re-bind event untuk input yang baru
+    this.imageInput.addEventListener("change", (e) => this.handleImageUpload(e))
+
+    // Set default scale setelah delay
+    setTimeout(() => {
+      const defaultRadio = document.querySelector('input[name="scale"][value="2"]')
+      if (defaultRadio) {
+        defaultRadio.checked = true
+        this.selectedScale = 2
+      }
+    }, 200)
+
     window.scrollTo({ top: 0, behavior: "smooth" })
+
+    console.log("✅ Application reset completed")
+    this.showSuccess("🔄 Ready for new image!")
   }
 
   resetProcessing() {
@@ -475,7 +589,7 @@ class AIImageUpscaler {
   showError(message) {
     const errorDiv = document.createElement("div")
     errorDiv.className =
-      "fixed top-4 right-4 bg-red-500 text-white px-6 py-4 rounded-xl shadow-2xl z-50 transform translate-x-full transition-transform duration-300"
+      "fixed top-4 left-4 bg-red-500 text-white px-6 py-4 rounded-xl shadow-2xl z-50 transform -translate-x-full transition-transform duration-300"
     errorDiv.textContent = message
 
     document.body.appendChild(errorDiv)
@@ -485,7 +599,7 @@ class AIImageUpscaler {
     }, 100)
 
     setTimeout(() => {
-      errorDiv.style.transform = "translateX(full)"
+      errorDiv.style.transform = "-translateX(full)"
       setTimeout(() => {
         if (document.body.contains(errorDiv)) {
           document.body.removeChild(errorDiv)
@@ -499,7 +613,8 @@ class AIImageUpscaler {
   showSuccess(message) {
     const successDiv = document.createElement("div")
     successDiv.className =
-      "fixed top-4 right-4 bg-green-600 text-white px-6 py-3 rounded-xl shadow-2xl z-50 transform translate-x-full transition-transform duration-300"
+      "fixed top-4 left-4 bg-green-600 text-white px-6 py-3 rounded-xl shadow-2xl z-50 transform -translate-x-full transition-transform duration-300"
+
     successDiv.textContent = message
 
     document.body.appendChild(successDiv)
@@ -509,7 +624,7 @@ class AIImageUpscaler {
     }, 100)
 
     setTimeout(() => {
-      successDiv.style.transform = "translateX(full)"
+      successDiv.style.transform = "-translateX(full)"
       setTimeout(() => {
         if (document.body.contains(successDiv)) {
           document.body.removeChild(successDiv)
