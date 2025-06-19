@@ -79,273 +79,495 @@
             height: auto;
             min-height: 100vh;
         }
+
+        /* Desktop Ad Styles */
+        .ad-container {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 160px;
+            height: 600px;
+            z-index: 40;
+            background: rgba(17, 24, 39, 0.8);
+            border: 1px solid rgba(75, 85, 99, 0.3);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+        }
+
+        .ad-left {
+            left: 20px;
+        }
+
+        .ad-right {
+            right: 20px;
+        }
+
+        .ad-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #9CA3AF;
+            font-size: 12px;
+            text-align: center;
+            padding: 10px;
+            border-radius: 12px;
+        }
+
+        /* Hide desktop ads on mobile and tablet */
+        @media (max-width: 1280px) {
+            .ad-container {
+                display: none;
+            }
+        }
+
+        /* Mobile Ad Styles */
+        .mobile-ad {
+            background: rgba(17, 24, 39, 0.9);
+            border: 1px solid rgba(75, 85, 99, 0.3);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            margin: 16px 0;
+        }
+
+        .mobile-ad-banner {
+            width: 100%;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #9CA3AF;
+            font-size: 12px;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .mobile-ad-square {
+            width: 100%;
+            height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #9CA3AF;
+            font-size: 12px;
+            text-align: center;
+            padding: 10px;
+        }
+
+        /* Show mobile ads only on mobile and tablet */
+        .mobile-ad {
+            display: none;
+        }
+
+        @media (max-width: 1279px) {
+            .mobile-ad {
+                display: block;
+            }
+        }
+
+        /* Adjust main content margin for desktop ads */
+        @media (min-width: 1280px) {
+            .main-content {
+                margin-left: 200px;
+                margin-right: 200px;
+            }
+        }
+
+        /* Sticky mobile banner ad */
+        .sticky-mobile-ad {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+            background: rgba(17, 24, 39, 0.95);
+            border-top: 1px solid rgba(75, 85, 99, 0.3);
+            backdrop-filter: blur(10px);
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .sticky-mobile-ad {
+                display: block;
+            }
+            
+            /* Add bottom padding to prevent content overlap */
+            body {
+                padding-bottom: 70px;
+            }
+        }
+
+        .sticky-ad-close {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            background: rgba(75, 85, 99, 0.8);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
     </style>
 </head>
 <body class="bg-black min-h-screen text-white">
+    <!-- Desktop Left Advertisement -->
+    <div class="ad-container ad-left">
+        <iframe data-aa='2399316' src='//acceptable.a-ads.com/2399316' style='border:0px; padding:0; width:100%; height:100%; overflow:hidden; background-color: transparent;'></iframe>
+    </div>
+
+    <!-- Desktop Right Advertisement -->
+    <div class="ad-container ad-right">
+        <iframe data-aa='2399316' src='//acceptable.a-ads.com/2399316' style='border:0px; padding:0; width:100%; height:100%; overflow:hidden; background-color: transparent;'></iframe>
+    </div>
+
+    <!-- Sticky Mobile Banner Ad (Bottom) -->
+    <div id="stickyMobileAd" class="sticky-mobile-ad">
+        <button class="sticky-ad-close" onclick="closeStickyAd()">×</button>
+        <div class="mobile-ad-banner">
+            <iframe data-aa='2399317' src='//acceptable.a-ads.com/2399317' style='border:0px; padding:0; width:100%; height:100%; overflow:hidden; background-color: transparent;'></iframe>
+        </div>
+    </div>
+
     <!-- Animated Background -->
     <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
         <div class="absolute -top-20 -right-20 w-40 h-40 bg-gray-800 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-float"></div>
         <div class="absolute -bottom-20 -left-20 w-40 h-40 bg-gray-700 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-float" style="animation-delay: 2s;"></div>
     </div>
 
-    <!-- Header -->
-    <header class="relative z-10 py-12">
-        <div class="container mx-auto px-4 text-center">
-            <div class="mb-6">
-                <div class="text-5xl mb-3 animate-bounce-slow">🚀</div>
-                <h1 class="text-4xl md:text-5xl font-black mb-4 text-white">
-                    AI Image Upscaler
-                </h1>
-                <p class="text-lg md:text-xl text-gray-300 mb-3 font-light">
-                    Perbesar gambar hingga <span class="text-blue-400 font-bold">8x</span> dengan AI
-                </p>
-                <p class="text-sm text-gray-400 max-w-xl mx-auto mb-4">
-                    ✨ Gratis • 🔒 100% Aman • ⚡ Proses Cepat
-                </p>
-            </div>
-        </div>
-    </header>
-
-    <!-- Main Content -->
-    <main class="relative z-10 container mx-auto px-4 pb-12">
-        <!-- Upload Card -->
-        <div class="max-w-3xl mx-auto">
-            <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6 mb-6">
-                <div class="text-center mb-6">
-                    <h2 class="text-2xl font-bold mb-3 text-white">
-                        📸 Upload Your Image
-                    </h2>
-                    <p class="text-gray-400 text-sm">
-                        Drag & drop atau klik untuk memilih gambar
+    <!-- Main Content Container -->
+    <div class="main-content">
+        <!-- Header -->
+        <header class="relative z-10 py-12">
+            <div class="container mx-auto px-4 text-center">
+                <div class="mb-6">
+                    <div class="text-5xl mb-3 animate-bounce-slow">🚀</div>
+                    <h1 class="text-4xl md:text-5xl font-black mb-4 text-white">
+                        AI Image Upscaler
+                    </h1>
+                    <p class="text-lg md:text-xl text-gray-300 mb-3 font-light">
+                        Perbesar gambar hingga <span class="text-blue-400 font-bold">8x</span> dengan AI
+                    </p>
+                    <p class="text-sm text-gray-400 max-w-xl mx-auto mb-4">
+                        ✨ Gratis • 🔒 100% Aman • ⚡ Proses Cepat
                     </p>
                 </div>
-                
-                <!-- File Upload Zone -->
-                <div class="mb-6">
-                    <label for="imageInput" class="block w-full cursor-pointer">
-                        <div id="dropZone" class="border-2 border-dashed border-gray-700 rounded-xl p-8 text-center hover:border-blue-500 hover:bg-blue-500/5 transition-all duration-300 group">
-                            <div class="text-4xl mb-3 group-hover:animate-bounce">📁</div>
-                            <p class="text-lg font-bold text-gray-300 mb-2 group-hover:text-blue-400 transition-colors">
-                                Drop your image here
-                            </p>
-                            <p class="text-gray-500 text-sm">
-                                Atau klik untuk browse • JPG, PNG, WebP • Max 10MB
-                            </p>
+            </div>
+        </header>
+
+        <!-- Mobile Ad Banner (After Header) -->
+        <div class="mobile-ad container mx-auto px-4">
+            <div class="mobile-ad-banner">
+                <iframe data-aa='2399318' src='//acceptable.a-ads.com/2399318' style='border:0px; padding:0; width:100%; height:100%; overflow:hidden; background-color: transparent;'></iframe>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="relative z-10 container mx-auto px-4 pb-12">
+            <!-- Upload Card -->
+            <div class="max-w-3xl mx-auto">
+                <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6 mb-6">
+                    <div class="text-center mb-6">
+                        <h2 class="text-2xl font-bold mb-3 text-white">
+                            📸 Upload Your Image
+                        </h2>
+                        <p class="text-gray-400 text-sm">
+                            Drag & drop atau klik untuk memilih gambar
+                        </p>
+                    </div>
+                    
+                    <!-- File Upload Zone -->
+                    <div class="mb-6">
+                        <label for="imageInput" class="block w-full cursor-pointer">
+                            <div id="dropZone" class="border-2 border-dashed border-gray-700 rounded-xl p-8 text-center hover:border-blue-500 hover:bg-blue-500/5 transition-all duration-300 group">
+                                <div class="text-4xl mb-3 group-hover:animate-bounce">📁</div>
+                                <p class="text-lg font-bold text-gray-300 mb-2 group-hover:text-blue-400 transition-colors">
+                                    Drop your image here
+                                </p>
+                                <p class="text-gray-500 text-sm">
+                                    Atau klik untuk browse • JPG, PNG, WebP • Max 10MB
+                                </p>
+                            </div>
+                            <input type="file" id="imageInput" accept="image/*" class="hidden">
+                        </label>
+                    </div>
+
+                    <!-- Image Preview -->
+                    <div id="imagePreview" class="hidden">
+                        <div class="bg-black/20 rounded-xl p-4 mb-6">
+                            <h3 class="text-xl font-bold text-center mb-4 text-cyan-400">
+                                📷 Preview Gambar Asli
+                            </h3>
+                            <div class="text-center">
+                                <img id="originalImage" class="max-w-full max-h-80 mx-auto rounded-lg shadow-xl border border-gray-600" alt="Original Image">
+                                <div id="imageInfo" class="mt-3 text-gray-300 text-sm"></div>
+                            </div>
                         </div>
-                        <input type="file" id="imageInput" accept="image/*" class="hidden">
-                    </label>
+
+                        <!-- Mobile Ad Square (Between Preview and Scale Selection) -->
+                        <div class="mobile-ad">
+                            <div class="mobile-ad-square">
+                                <iframe data-aa='2399319' src='//acceptable.a-ads.com/2399319' style='border:0px; padding:0; width:100%; height:100%; overflow:hidden; background-color: transparent;'></iframe>
+                            </div>
+                        </div>
+
+                        <!-- Scale Selection -->
+                        <div class="mb-6">
+                            <h3 class="text-xl font-bold text-center mb-4 text-white">
+                                🔍 Pilih Skala Perbesaran
+                            </h3>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <label class="cursor-pointer group">
+                                    <input type="radio" name="scale" value="2" class="hidden peer">
+                                    <div class="bg-gray-800 border border-gray-700 rounded-xl p-4 text-center peer-checked:bg-blue-900/30 peer-checked:border-blue-500 hover:scale-105 transition-all duration-300">
+                                        <div class="text-3xl mb-2 group-hover:animate-pulse">2️⃣</div>
+                                        <div class="font-bold text-lg mb-1 text-blue-400">2x Upscale</div>
+                                        <div class="text-gray-400 text-sm">Fast & Light</div>
+                                    </div>
+                                </label>
+                                <label class="cursor-pointer group">
+                                    <input type="radio" name="scale" value="4" class="hidden peer">
+                                    <div class="bg-gray-800 border border-gray-700 rounded-xl p-4 text-center peer-checked:bg-purple-900/30 peer-checked:border-purple-500 hover:scale-105 transition-all duration-300">
+                                        <div class="text-3xl mb-2 group-hover:animate-pulse">4️⃣</div>
+                                        <div class="font-bold text-lg mb-1 text-purple-400">4x Upscale</div>
+                                        <div class="text-gray-400 text-sm">Balanced</div>
+                                    </div>
+                                </label>
+                                <label class="cursor-pointer group">
+                                    <input type="radio" name="scale" value="8" class="hidden peer">
+                                    <div class="bg-gray-800 border border-gray-700 rounded-xl p-4 text-center peer-checked:bg-red-900/30 peer-checked:border-red-500 hover:scale-105 transition-all duration-300">
+                                        <div class="text-3xl mb-2 group-hover:animate-pulse">8️⃣</div>
+                                        <div class="font-bold text-lg mb-1 text-red-400">8x Upscale</div>
+                                        <div class="text-gray-400 text-sm">Maximum</div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                        <p class="text-center mb-2 ">Note: untuk 8x hanya suport gambar maximal 1024 x 1024</p>
+                        <!-- Process Button -->
+                        <div class="text-center">
+                            <button id="processBtn" class="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3 rounded-xl text-lg font-bold transform hover:scale-105 transition-all duration-300 shadow-xl">
+                                <span class="flex items-center justify-center gap-2">
+                                    🚀 <span>Start AI Upscaling</span>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Image Preview -->
-                <div id="imagePreview" class="hidden">
-                    <div class="bg-black/20 rounded-xl p-4 mb-6">
-                        <h3 class="text-xl font-bold text-center mb-4 text-cyan-400">
-                            📷 Preview Gambar Asli
+                <!-- Processing Section -->
+                <div id="processingSection" class="hidden bg-gray-900 border border-gray-800 rounded-2xl p-8 mb-6 text-center">
+                    <div class="mb-6">
+                        <div class="w-16 h-16 mx-auto mb-4 relative">
+                            <div class="absolute inset-0 rounded-full border-4 border-cyan-500/30"></div>
+                            <div class="absolute inset-0 rounded-full border-4 border-transparent border-t-cyan-500 animate-spin"></div>
+                            <div class="absolute inset-2 rounded-full border-4 border-transparent border-t-purple-500 animate-spin" style="animation-direction: reverse; animation-duration: 1.5s;"></div>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-3 gradient-text">
+                            🤖 AI Processing<span class="loading-dots"></span>
                         </h3>
-                        <div class="text-center">
-                            <img id="originalImage" class="max-w-full max-h-80 mx-auto rounded-lg shadow-xl border border-gray-600" alt="Original Image">
-                            <div id="imageInfo" class="mt-3 text-gray-300 text-sm"></div>
+                        <p class="text-lg text-gray-300 mb-6">
+                            Gambar anda sedang di proses
+                        </p>
+                    </div>
+                    
+                    <div class="max-w-md mx-auto">
+                        <div class="bg-gray-800 rounded-full h-4 mb-3 overflow-hidden">
+                            <div id="progressBar" class="progress-bar h-full rounded-full transition-all duration-500 ease-out" style="width: 0%"></div>
+                        </div>
+                        <p id="progressText" class="text-sm text-gray-300 font-medium">Initializing AI model...</p>
+                    </div>
+                </div>
+
+                <!-- Results Section -->
+                <div id="resultsSection" class="hidden bg-gray-900 border border-gray-800 rounded-2xl p-6">
+                    <div class="text-center mb-6">
+                        <h3 class="text-3xl font-bold gradient-text mb-3">
+                            ✨ Amazing Results!
+                        </h3>
+                        <p class="text-lg text-gray-300">
+                            Lihat perbedaan kualitas gambar sebelum dan sesudah
+                        </p>
+                    </div>
+                    
+                    <!-- Comparison Grid -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                        <!-- Original -->
+                        <div class="bg-black/20 rounded-xl p-4">
+                            <h4 class="text-lg font-bold text-center mb-3 text-gray-300">
+                                📷 Original Image
+                            </h4>
+                            <div class="text-center">
+                                <img id="originalCompare" class="w-full rounded-lg shadow-xl border border-gray-600" alt="Original">
+                                <div id="originalSize" class="mt-2 text-gray-400 text-sm"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Upscaled -->
+                        <div class="bg-black/20 rounded-xl p-4">
+                            <h4 class="text-lg font-bold text-center mb-3 text-cyan-400">
+                                🎯 AI Upscaled
+                            </h4>
+                            <div class="text-center">
+                                <canvas id="resultCanvas" class="w-full rounded-lg shadow-xl border border-cyan-400/50"></canvas>
+                                <div id="upscaledSize" class="mt-2 text-cyan-400 text-sm"></div>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Scale Selection -->
-                    <div class="mb-6">
-                        <h3 class="text-xl font-bold text-center mb-4 text-white">
-                            🔍 Pilih Skala Perbesaran
-                        </h3>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <label class="cursor-pointer group">
-                                <input type="radio" name="scale" value="2" class="hidden peer">
-                                <div class="bg-gray-800 border border-gray-700 rounded-xl p-4 text-center peer-checked:bg-blue-900/30 peer-checked:border-blue-500 hover:scale-105 transition-all duration-300">
-                                    <div class="text-3xl mb-2 group-hover:animate-pulse">2️⃣</div>
-                                    <div class="font-bold text-lg mb-1 text-blue-400">2x Upscale</div>
-                                    <div class="text-gray-400 text-sm">Fast & Light</div>
-                                </div>
-                            </label>
-                            <label class="cursor-pointer group">
-                                <input type="radio" name="scale" value="4" class="hidden peer">
-                                <div class="bg-gray-800 border border-gray-700 rounded-xl p-4 text-center peer-checked:bg-purple-900/30 peer-checked:border-purple-500 hover:scale-105 transition-all duration-300">
-                                    <div class="text-3xl mb-2 group-hover:animate-pulse">4️⃣</div>
-                                    <div class="font-bold text-lg mb-1 text-purple-400">4x Upscale</div>
-                                    <div class="text-gray-400 text-sm">Balanced</div>
-                                </div>
-                            </label>
-                            <label class="cursor-pointer group">
-                                <input type="radio" name="scale" value="8" class="hidden peer">
-                                <div class="bg-gray-800 border border-gray-700 rounded-xl p-4 text-center peer-checked:bg-red-900/30 peer-checked:border-red-500 hover:scale-105 transition-all duration-300">
-                                    <div class="text-3xl mb-2 group-hover:animate-pulse">8️⃣</div>
-                                    <div class="font-bold text-lg mb-1 text-red-400">8x Upscale</div>
-                                    <div class="text-gray-400 text-sm">Maximum</div>
-                                </div>
-                            </label>
+                    <!-- Mobile Ad Banner (Before Action Buttons) -->
+                    <div class="mobile-ad mb-6">
+                        <div class="mobile-ad-banner">
+                            <iframe data-aa='2399320' src='//acceptable.a-ads.com/2399320' style='border:0px; padding:0; width:100%; height:100%; overflow:hidden; background-color: transparent;'></iframe>
                         </div>
                     </div>
-                    <p class="text-center mb-2 ">Note: untuk 8x hanya suport gambar maximal 1024 x 1024</p>
-                    <!-- Process Button -->
-                    <div class="text-center">
-                        <button id="processBtn" class="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3 rounded-xl text-lg font-bold transform hover:scale-105 transition-all duration-300 shadow-xl">
-                            <span class="flex items-center justify-center gap-2">
-                                🚀 <span>Start AI Upscaling</span>
+
+                    <!-- Action Buttons -->
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                        <button id="downloadBtn" class="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-6 py-3 rounded-xl text-lg font-bold transform hover:scale-105 transition-all duration-300 shadow-xl">
+                            <span class="flex items-center gap-2">
+                                💾 <span>Download Result</span>
+                            </span>
+                        </button>
+                        <button id="newImageBtn" class="bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800 text-white px-6 py-3 rounded-xl text-lg font-bold transform hover:scale-105 transition-all duration-300 shadow-xl">
+                            <span class="flex items-center gap-2">
+                                🔄 <span>Process New Image</span>
                             </span>
                         </button>
                     </div>
                 </div>
-            </div>
 
-            <!-- Processing Section -->
-            <div id="processingSection" class="hidden bg-gray-900 border border-gray-800 rounded-2xl p-8 mb-6 text-center">
-                <div class="mb-6">
-                    <div class="w-16 h-16 mx-auto mb-4 relative">
-                        <div class="absolute inset-0 rounded-full border-4 border-cyan-500/30"></div>
-                        <div class="absolute inset-0 rounded-full border-4 border-transparent border-t-cyan-500 animate-spin"></div>
-                        <div class="absolute inset-2 rounded-full border-4 border-transparent border-t-purple-500 animate-spin" style="animation-direction: reverse; animation-duration: 1.5s;"></div>
+                <!-- Mobile Ad Square (Before Donation Section) -->
+                <div class="mobile-ad">
+                    <div class="mobile-ad-square">
+                        <iframe data-aa='2399321' src='//acceptable.a-ads.com/2399321' style='border:0px; padding:0; width:100%; height:100%; overflow:hidden; background-color: transparent;'></iframe>
                     </div>
-                    <h3 class="text-2xl font-bold mb-3 gradient-text">
-                        🤖 AI Processing<span class="loading-dots"></span>
-                    </h3>
-                    <p class="text-lg text-gray-300 mb-6">
-                        Gambar anda sedang di proses
-                    </p>
                 </div>
-                
-                <div class="max-w-md mx-auto">
-                    <div class="bg-gray-800 rounded-full h-4 mb-3 overflow-hidden">
-                        <div id="progressBar" class="progress-bar h-full rounded-full transition-all duration-500 ease-out" style="width: 0%"></div>
-                    </div>
-                    <p id="progressText" class="text-sm text-gray-300 font-medium">Initializing AI model...</p>
-                </div>
-            </div>
 
-            <!-- Results Section -->
-            <div id="resultsSection" class="hidden bg-gray-900 border border-gray-800 rounded-2xl p-6">
-                <div class="text-center mb-6">
-                    <h3 class="text-3xl font-bold gradient-text mb-3">
-                        ✨ Amazing Results!
-                    </h3>
-                    <p class="text-lg text-gray-300">
-                        Lihat perbedaan kualitas gambar sebelum dan sesudah
-                    </p>
-                </div>
-                
-                <!-- Comparison Grid -->
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                    <!-- Original -->
-                    <div class="bg-black/20 rounded-xl p-4">
-                        <h4 class="text-lg font-bold text-center mb-3 text-gray-300">
-                            📷 Original Image
-                        </h4>
-                        <div class="text-center">
-                            <img id="originalCompare" class="w-full rounded-lg shadow-xl border border-gray-600" alt="Original">
-                            <div id="originalSize" class="mt-2 text-gray-400 text-sm"></div>
-                        </div>
+                <!-- Donation Section -->
+                <div class="donation-card rounded-2xl p-6 mt-8 text-center">
+                    <div class="mb-4">
+                        <div class="text-4xl mb-3">☕</div>
+                        <h3 class="text-2xl font-bold mb-2 text-white">
+                            Support This Project
+                        </h3>
+                        <p class="text-blue-100 mb-4">
+                            Jika aplikasi ini membantu Anda, pertimbangkan untuk memberikan donasi
+                        </p>
                     </div>
                     
-                    <!-- Upscaled -->
-                    <div class="bg-black/20 rounded-xl p-4">
-                        <h4 class="text-lg font-bold text-center mb-3 text-cyan-400">
-                            🎯 AI Upscaled
-                        </h4>
-                        <div class="text-center">
-                            <canvas id="resultCanvas" class="w-full rounded-lg shadow-xl border border-cyan-400/50"></canvas>
-                            <div id="upscaledSize" class="mt-2 text-cyan-400 text-sm"></div>
-                        </div>
+                    <div class="bg-white/10 rounded-xl p-4 mb-4">
+                        <img src="/placeholder.svg?height=192&width=192" alt="Donation QR Code" class="w-48 h-48 mx-auto rounded-lg shadow-lg border-2 border-white/20">
+                        <p class="text-white/80 text-sm mt-3">
+                            Scan QR code untuk donasi 😁
+                        </p>
                     </div>
-                </div>
-
-                <!-- Action Buttons -->
-                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                    <button id="downloadBtn" class="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-6 py-3 rounded-xl text-lg font-bold transform hover:scale-105 transition-all duration-300 shadow-xl">
-                        <span class="flex items-center gap-2">
-                            💾 <span>Download Result</span>
-                        </span>
-                    </button>
-                    <button id="newImageBtn" class="bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800 text-white px-6 py-3 rounded-xl text-lg font-bold transform hover:scale-105 transition-all duration-300 shadow-xl">
-                        <span class="flex items-center gap-2">
-                            🔄 <span>Process New Image</span>
-                        </span>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Donation Section -->
-            <div class="donation-card rounded-2xl p-6 mt-8 text-center">
-                <div class="mb-4">
-                    <div class="text-4xl mb-3">☕</div>
-                    <h3 class="text-2xl font-bold mb-2 text-white">
-                        Support This Project
-                    </h3>
-                    <p class="text-blue-100 mb-4">
-                        Jika aplikasi ini membantu Anda, pertimbangkan untuk memberikan donasi
+                    
+                    <p class="text-blue-100 text-sm">
+                        Setiap donasi sangat berarti untuk pengembangan aplikasi ini 🙏
                     </p>
                 </div>
-                
-                <div class="bg-white/10 rounded-xl p-4 mb-4">
-                    <img src="foto.jpg" alt="Donation QR Code" class="w-48 h-48 mx-auto rounded-lg shadow-lg border-2 border-white/20" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                    <div style="display:none;" class="w-48 h-48 mx-auto bg-gray-700 rounded-lg flex items-center justify-center">
-                        <span class="text-gray-400">💳 QR Code Donasi</span>
-                    </div>
-                    <p class="text-white/80 text-sm mt-3">
-                        Scan QR code untuk donasi 😁
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="relative z-10 text-center py-8 mt-12">
+            <div class="bg-gray-900 border border-gray-800 rounded-2xl max-w-2xl mx-auto p-6">
+                <div class="text-3xl mb-3">🧠</div>
+                <h3 class="text-xl font-bold gradient-text mb-3">
+                    Powered by AI
+                </h3>
+                <p class="text-gray-300 mb-3 text-sm">
+                    Menggunakan teknologi bicubic interpolation untuk pemrosesan gambar berkualitas tinggi
+                </p>
+                <p class="text-xs text-gray-400 mb-3">
+                    🔒 Data anda terlindungi.
+                </p>
+
+                <div class="border-t border-gray-700 pt-3">
+                    <p class="text-xs text-gray-500">
+                        © 2025 <span class="text-blue-400 font-semibold">Muhammad Fikri</span>. All rights reserved.
+                    </p>
+                    <p class="text-xs text-gray-600 mt-1">
+                        AI Image Upscaler - Made with ❤️ in Indonesia
                     </p>
                 </div>
-                
-                <p class="text-blue-100 text-sm">
-                    Setiap donasi sangat berarti untuk pengembangan aplikasi ini 🙏
-                </p>
-            </div>
-        </div>
-    </main>
-
-    <!-- Footer -->
-    <footer class="relative z-10 text-center py-8 mt-12">
-        <div class="bg-gray-900 border border-gray-800 rounded-2xl max-w-2xl mx-auto p-6">
-            <div class="text-3xl mb-3">🧠</div>
-            <h3 class="text-xl font-bold gradient-text mb-3">
-                Powered by AI
-            </h3>
-            <p class="text-gray-300 mb-3 text-sm">
-                Menggunakan teknologi bicubic interpolation untuk pemrosesan gambar berkualitas tinggi
-            </p>
-            <p class="text-xs text-gray-400 mb-3">
-                🔒 Data anda terlindungi.
-            </p>
-
-            <div class="border-t border-gray-700 pt-3">
-                <p class="text-xs text-gray-500">
-                    © 2025 <span class="text-blue-400 font-semibold">Muhammad Fikri</span>. All rights reserved.
-                </p>
-                <p class="text-xs text-gray-600 mt-1">
-                    AI Image Upscaler - Made with ❤️ in Indonesia
-                </p>
-            </div>
-            <div class="border-t border-gray-700 pt-4 mt-4">
-                <h4 class="text-sm font-semibold text-gray-300 mb-3">Follow Me</h4>
-                <div class="flex justify-center gap-4">
-                    <a href="https://www.tiktok.com/@user9231931433" target="_blank" rel="noopener noreferrer" 
-                       class="bg-gray-800 hover:bg-pink-600 text-white p-3 rounded-xl transition-all duration-300 transform hover:scale-110 group">
-                        <svg class="w-5 h-5 group-hover:animate-bounce" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
-                        </svg>
-                    </a>
-                    <a href="https://github.com/MuhammadFikriiii" target="_blank" rel="noopener noreferrer"
-                       class="bg-gray-800 hover:bg-gray-600 text-white p-3 rounded-xl transition-all duration-300 transform hover:scale-110 group">
-                        <svg class="w-5 h-5 group-hover:animate-pulse" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                        </svg>
-                    </a>
-                    <a href="https://www.instagram.com/mfikri.724/" target="_blank" rel="noopener noreferrer"
-                       class="bg-gray-800 hover:bg-gradient-to-r hover:from-purple-500 hover:to-pink-500 text-white p-3 rounded-xl transition-all duration-300 transform hover:scale-110 group">
-                        <svg class="w-5 h-5 group-hover:animate-spin" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-                        </svg>
-                    </a>
+                <div class="border-t border-gray-700 pt-4 mt-4">
+                    <h4 class="text-sm font-semibold text-gray-300 mb-3">Follow Me</h4>
+                    <div class="flex justify-center gap-4">
+                        <a href="https://www.tiktok.com/@user9231931433" target="_blank" rel="noopener noreferrer" 
+                           class="bg-gray-800 hover:bg-pink-600 text-white p-3 rounded-xl transition-all duration-300 transform hover:scale-110 group">
+                            <svg class="w-5 h-5 group-hover:animate-bounce" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+                            </svg>
+                        </a>
+                        <a href="https://github.com/MuhammadFikriiii" target="_blank" rel="noopener noreferrer"
+                           class="bg-gray-800 hover:bg-gray-600 text-white p-3 rounded-xl transition-all duration-300 transform hover:scale-110 group">
+                            <svg class="w-5 h-5 group-hover:animate-pulse" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                            </svg>
+                        </a>
+                        <a href="https://www.instagram.com/mfikri.724/" target="_blank" rel="noopener noreferrer"
+                           class="bg-gray-800 hover:bg-gradient-to-r hover:from-purple-500 hover:to-pink-500 text-white p-3 rounded-xl transition-all duration-300 transform hover:scale-110 group">
+                            <svg class="w-5 h-5 group-hover:animate-spin" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                            </svg>
+                        </a>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-3">
+                        Connect with me on social media! 🌟
+                    </p>
                 </div>
-                <p class="text-xs text-gray-500 mt-3">
-                    Connect with me on social media! 🌟
-                </p>
             </div>
-        </div>
-    </footer>
+        </footer>
+    </div>
+
+    <!-- JavaScript for Ad Management -->
+    <script>
+        // Function to close sticky mobile ad
+        function closeStickyAd() {
+            const stickyAd = document.getElementById('stickyMobileAd');
+            if (stickyAd) {
+                stickyAd.style.display = 'none';
+                // Remove bottom padding when ad is closed
+                document.body.style.paddingBottom = '0';
+            }
+        }
+
+        // Show sticky ad after 10 seconds on mobile
+        setTimeout(() => {
+            const stickyAd = document.getElementById('stickyMobileAd');
+            if (window.innerWidth <= 768 && stickyAd) {
+                stickyAd.style.display = 'block';
+            }
+        }, 10000);
+
+        // Hide sticky ad when processing or showing results to avoid interference
+        function hideAdsForProcessing() {
+            const stickyAd = document.getElementById('stickyMobileAd');
+            if (stickyAd) {
+                stickyAd.style.display = 'none';
+                document.body.style.paddingBottom = '0';
+            }
+        }
+
+        // Show sticky ad again after processing is complete
+        function showAdsAfterProcessing() {
+            setTimeout(() => {
+                const stickyAd = document.getElementById('stickyMobileAd');
+                if (window.innerWidth <= 768 && stickyAd) {
+                    stickyAd.style.display = 'block';
+                    document.body.style.paddingBottom = '70px';
+                }
+            }, 3000);
+        }
+    </script>
 
     <!-- Load JavaScript -->
     <script src="script.js"></script>
