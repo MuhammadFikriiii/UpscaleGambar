@@ -4,6 +4,8 @@ class AIImageUpscaler {
     this.selectedScale = 2
     this.isProcessing = false
     this.originalFileName = ""
+    this.selectedOperation = "upscale"
+    this.selectedFormat = "png"
 
     this.initializeElements()
     this.bindEvents()
@@ -30,6 +32,10 @@ class AIImageUpscaler {
     this.originalCompare = document.getElementById("originalCompare")
     this.originalSize = document.getElementById("originalSize")
     this.upscaledSize = document.getElementById("upscaledSize")
+    this.formatSelection = document.getElementById("formatSelection")
+    this.scaleSelection = document.getElementById("scaleSelection")
+    this.processBtnText = document.getElementById("processBtnText")
+    this.resultTitle = document.getElementById("resultTitle")
   }
 
   bindEvents() {
@@ -44,6 +50,23 @@ class AIImageUpscaler {
       })
     })
 
+    // Operation type selection
+    document.querySelectorAll('input[name="operation"]').forEach((radio) => {
+      radio.addEventListener("change", (e) => {
+        this.selectedOperation = e.target.value
+        this.toggleOperationUI()
+        console.log(`⚙️ Operation selected: ${this.selectedOperation}`)
+      })
+    })
+
+    // Format selection
+    document.querySelectorAll('input[name="format"]').forEach((radio) => {
+      radio.addEventListener("change", (e) => {
+        this.selectedFormat = e.target.value
+        console.log(`📁 Format selected: ${this.selectedFormat}`)
+      })
+    })
+
     // Process button
     this.processBtn.addEventListener("click", () => this.processImage())
 
@@ -52,6 +75,27 @@ class AIImageUpscaler {
 
     // New image button
     this.newImageBtn.addEventListener("click", () => this.resetApp())
+  }
+
+  toggleOperationUI() {
+    if (this.selectedOperation === "convert") {
+      this.formatSelection.classList.remove("hidden")
+      this.scaleSelection.classList.add("hidden")
+      this.processBtnText.textContent = "Start Format Conversion"
+
+      // Set default format
+      setTimeout(() => {
+        const defaultFormat = document.querySelector('input[name="format"][value="png"]')
+        if (defaultFormat) {
+          defaultFormat.checked = true
+          this.selectedFormat = "png"
+        }
+      }, 100)
+    } else {
+      this.formatSelection.classList.add("hidden")
+      this.scaleSelection.classList.remove("hidden")
+      this.processBtnText.textContent = "Start AI Upscaling"
+    }
   }
 
   setupDragAndDrop() {
@@ -224,8 +268,17 @@ class AIImageUpscaler {
     }
 
     this.isProcessing = true
-    console.log(`🚀 Starting ${this.selectedScale}x upscale process`)
 
+    if (this.selectedOperation === "convert") {
+      console.log(`🔄 Starting format conversion to ${this.selectedFormat.toUpperCase()}`)
+      await this.processConversion()
+    } else {
+      console.log(`🚀 Starting ${this.selectedScale}x upscale process`)
+      await this.processUpscaling()
+    }
+  }
+
+  async processUpscaling() {
     this.imagePreview.style.display = "none"
     this.processingSection.classList.remove("hidden")
     this.resultsSection.classList.add("hidden")
@@ -244,10 +297,37 @@ class AIImageUpscaler {
       this.updateProgress(100, "Complete! 🎉")
       await this.delay(800)
 
-      this.displayResults(upscaledCanvas)
+      this.displayResults(upscaledCanvas, "upscale")
     } catch (error) {
       console.error("❌ Error during processing:", error)
       this.showError("❌ Terjadi kesalahan saat memproses gambar. Silakan coba lagi.")
+      this.resetProcessing()
+    }
+  }
+
+  async processConversion() {
+    this.imagePreview.style.display = "none"
+    this.processingSection.classList.remove("hidden")
+    this.resultsSection.classList.add("hidden")
+
+    try {
+      this.updateProgress(0, "Preparing conversion...")
+      await this.delay(500)
+
+      this.updateProgress(30, "Creating canvas...")
+      const sourceCanvas = this.createCanvasFromImage(this.originalImage)
+      await this.delay(300)
+
+      this.updateProgress(60, `Converting to ${this.selectedFormat.toUpperCase()}...`)
+      await this.delay(800)
+
+      this.updateProgress(100, "Conversion complete! 🎉")
+      await this.delay(500)
+
+      this.displayResults(sourceCanvas, "convert")
+    } catch (error) {
+      console.error("❌ Error during conversion:", error)
+      this.showError("❌ Terjadi kesalahan saat mengkonversi gambar. Silakan coba lagi.")
       this.resetProcessing()
     }
   }
@@ -376,21 +456,34 @@ class AIImageUpscaler {
     return 0
   }
 
-  displayResults(upscaledCanvas) {
-    this.resultCanvas.width = upscaledCanvas.width
-    this.resultCanvas.height = upscaledCanvas.height
+  displayResults(resultCanvas, operationType) {
+    this.resultCanvas.width = resultCanvas.width
+    this.resultCanvas.height = resultCanvas.height
 
     const ctx = this.resultCanvas.getContext("2d")
-    ctx.drawImage(upscaledCanvas, 0, 0)
+    ctx.drawImage(resultCanvas, 0, 0)
 
-    this.upscaledSize.textContent = `${upscaledCanvas.width} × ${upscaledCanvas.height}`
-    this.resultImageData = upscaledCanvas
+    if (operationType === "convert") {
+      this.upscaledSize.textContent = `${resultCanvas.width} × ${resultCanvas.height} (${this.selectedFormat.toUpperCase()})`
+      this.resultTitle.textContent = "Format Converted"
+    } else {
+      this.upscaledSize.textContent = `${resultCanvas.width} × ${resultCanvas.height}`
+      this.resultTitle.textContent = "AI Upscaled"
+    }
+
+    this.resultImageData = resultCanvas
+    this.operationType = operationType
 
     this.processingSection.classList.add("hidden")
     this.resultsSection.classList.remove("hidden")
 
     this.isProcessing = false
-    console.log("✅ Upscaling completed successfully!")
+
+    if (operationType === "convert") {
+      console.log(`✅ Format conversion to ${this.selectedFormat.toUpperCase()} completed successfully!`)
+    } else {
+      console.log("✅ Upscaling completed successfully!")
+    }
   }
 
   updateProgress(percent, text) {
@@ -406,80 +499,73 @@ class AIImageUpscaler {
 
     console.log("💾 Starting download...")
 
-    // Get original file extension and name
-    const originalExtension = this.originalFileName.split(".").pop().toLowerCase()
     const originalName = this.originalFileName.replace(/\.[^/.]+$/, "")
+    let filename,
+      mimeType,
+      quality = 0.9
 
-    // Determine quality based on scale
-    let quality = 0.9
-    if (this.selectedScale >= 8) {
-      quality = 0.8
-    } else if (this.selectedScale >= 4) {
-      quality = 0.85
+    if (this.operationType === "convert") {
+      // For conversion, use selected format
+      switch (this.selectedFormat) {
+        case "png":
+          mimeType = "image/png"
+          filename = `${originalName}_converted.png`
+          quality = 1.0
+          break
+        case "webp":
+          mimeType = "image/webp"
+          filename = `${originalName}_converted.webp`
+          quality = 0.9
+          break
+        case "jpeg":
+          mimeType = "image/jpeg"
+          filename = `${originalName}_converted.jpg`
+          quality = 0.9
+          break
+      }
+    } else {
+      // For upscaling, use original format
+      const originalExtension = this.originalFileName.split(".").pop().toLowerCase()
+
+      switch (originalExtension) {
+        case "png":
+          mimeType = "image/png"
+          filename = `${originalName}_upscaled_${this.selectedScale}x.png`
+          quality = 1.0
+          break
+        case "webp":
+          mimeType = "image/webp"
+          filename = `${originalName}_upscaled_${this.selectedScale}x.webp`
+          break
+        default:
+          mimeType = "image/jpeg"
+          filename = `${originalName}_upscaled_${this.selectedScale}x.jpg`
+      }
     }
 
-    // Use original format
-    let mimeType = "image/jpeg"
-    let downloadExtension = "jpg"
-
-    switch (originalExtension) {
-      case "png":
-        mimeType = "image/png"
-        downloadExtension = "png"
-        quality = 1.0 // PNG is lossless
-        break
-      case "webp":
-        mimeType = "image/webp"
-        downloadExtension = "webp"
-        break
-      case "jpg":
-      case "jpeg":
-        mimeType = "image/jpeg"
-        downloadExtension = "jpg"
-        break
-      default:
-        mimeType = "image/jpeg"
-        downloadExtension = "jpg"
-    }
-
-    const filename = `${originalName}_upscaled_${this.selectedScale}x.${downloadExtension}`
-
-    // Create blob with original format
     this.resultImageData.toBlob(
       (blob) => {
         if (blob) {
-          this.downloadBlob(blob, downloadExtension, filename)
+          const url = URL.createObjectURL(blob)
+          const a = document.createElement("a")
+          const fileSizeMB = (blob.size / (1024 * 1024)).toFixed(1)
+
+          a.href = url
+          a.download = filename
+          document.body.appendChild(a)
+          a.click()
+          document.body.removeChild(a)
+          URL.revokeObjectURL(url)
+
+          console.log(`✅ Download completed - ${fileSizeMB}MB`)
+          this.showSuccess(`📁 Downloaded: ${filename} (${fileSizeMB}MB)`)
         } else {
-          // Fallback to JPEG
-          this.resultImageData.toBlob(
-            (fallbackBlob) => {
-              const fallbackFilename = `${originalName}_upscaled_${this.selectedScale}x.jpg`
-              this.downloadBlob(fallbackBlob, "jpg", fallbackFilename)
-            },
-            "image/jpeg",
-            0.9,
-          )
+          this.showError("❌ Gagal membuat file download")
         }
       },
       mimeType,
       quality,
     )
-  }
-
-  downloadBlob(blob, format, filename) {
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement("a")
-    const fileSizeMB = (blob.size / (1024 * 1024)).toFixed(1)
-
-    a.href = url
-    a.download = filename
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
-    URL.revokeObjectURL(url)
-
-    console.log(`✅ Download completed - ${fileSizeMB}MB ${format.toUpperCase()}`)
-    this.showSuccess(`📁 Downloaded: ${filename} (${fileSizeMB}MB)`)
   }
 
   resetApp() {
@@ -495,6 +581,9 @@ class AIImageUpscaler {
     this.originalImage = null
     this.resultImageData = null
     this.selectedScale = 2
+    this.selectedOperation = "upscale"
+    this.selectedFormat = "png"
+    this.operationType = null
     this.isProcessing = false
     this.originalFileName = ""
 
@@ -529,18 +618,39 @@ class AIImageUpscaler {
     }
 
     // Reset canvas
-    if (this.resultCanvas) {
-      const ctx = this.resultCanvas.getContext("2d")
-      ctx.clearRect(0, 0, this.resultCanvas.width, this.resultCanvas.height)
-      this.resultCanvas.width = 0
-      this.resultCanvas.height = 0
-    }
+    if (this.resultCanvas)
+      if (this.resultCanvas) {
+        // Reset canvas
+        const ctx = this.resultCanvas.getContext("2d")
+        ctx.clearRect(0, 0, this.resultCanvas.width, this.resultCanvas.height)
+        this.resultCanvas.width = 0
+        this.resultCanvas.height = 0
+      }
 
     // Reset radio buttons
     const radioButtons = document.querySelectorAll('input[name="scale"]')
     radioButtons.forEach((radio) => {
       radio.checked = false
     })
+
+    // Reset operation and format radio buttons
+    const operationButtons = document.querySelectorAll('input[name="operation"]')
+    operationButtons.forEach((radio) => {
+      radio.checked = false
+    })
+
+    const formatButtons = document.querySelectorAll('input[name="format"]')
+    formatButtons.forEach((radio) => {
+      radio.checked = false
+    })
+
+    // Hide format selection and show scale selection
+    if (this.formatSelection) {
+      this.formatSelection.classList.add("hidden")
+    }
+    if (this.scaleSelection) {
+      this.scaleSelection.classList.remove("hidden")
+    }
 
     // Reset progress
     if (this.progressBar) {
@@ -571,6 +681,23 @@ class AIImageUpscaler {
       if (defaultRadio) {
         defaultRadio.checked = true
         this.selectedScale = 2
+      }
+
+      // Set default operation
+      const defaultOperation = document.querySelector('input[name="operation"][value="upscale"]')
+      if (defaultOperation) {
+        defaultOperation.checked = true
+        this.selectedOperation = "upscale"
+      }
+
+      // Update button text
+      if (this.processBtnText) {
+        this.processBtnText.textContent = "Start AI Upscaling"
+      }
+
+      // Reset result title
+      if (this.resultTitle) {
+        this.resultTitle.textContent = "AI Upscaled"
       }
     }, 200)
 
@@ -646,4 +773,4 @@ document.addEventListener("DOMContentLoaded", () => {
 
 console.log("%c🚀 AI Image Upscaler Loaded!", "color: #00ff88; font-size: 20px; font-weight: bold;")
 console.log("%cPowered by Advanced Bicubic Interpolation", "color: #00aaff; font-size: 14px;")
-console.log("%c© 2024 Muhammad Fikri", "color: #ffaa00; font-size: 12px;")
+console.log("%c© 2025 Muhammad Fikri", "color: #ffaa00; font-size: 12px;")

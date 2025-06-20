@@ -249,10 +249,10 @@
                 <div class="mb-6">
                     <div class="text-5xl mb-3 animate-bounce-slow">🚀</div>
                     <h1 class="text-4xl md:text-5xl font-black mb-4 text-white">
-                        AI Image Upscaler
+                        AI Image Upscaler & Converter
                     </h1>
                     <p class="text-lg md:text-xl text-gray-300 mb-3 font-light">
-                        Perbesar gambar hingga <span class="text-blue-400 font-bold">8x</span> dengan AI
+                        Perbesar gambar hingga <span class="text-blue-400 font-bold">8x</span> dengan AI atau <span class="text-green-400 font-bold">konversi format</span>
                     </p>
                     <p class="text-sm text-gray-400 max-w-xl mx-auto mb-4">
                         ✨ Gratis • 🔒 100% Aman • ⚡ Proses Cepat
@@ -317,8 +317,33 @@
                             </div>
                         </div>
 
-                        <!-- Scale Selection -->
+                        <!-- Operation Type Selection -->
                         <div class="mb-6">
+                            <h3 class="text-xl font-bold text-center mb-4 text-white">
+                                ⚙️ Pilih Operasi
+                            </h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <label class="cursor-pointer group">
+                                    <input type="radio" name="operation" value="upscale" class="hidden peer" checked>
+                                    <div class="bg-gray-800 border border-gray-700 rounded-xl p-4 text-center peer-checked:bg-blue-900/30 peer-checked:border-blue-500 hover:scale-105 transition-all duration-300">
+                                        <div class="text-3xl mb-2 group-hover:animate-pulse">🔍</div>
+                                        <div class="font-bold text-lg mb-1 text-blue-400">AI Upscale</div>
+                                        <div class="text-gray-400 text-sm">Perbesar gambar dengan AI</div>
+                                    </div>
+                                </label>
+                                <label class="cursor-pointer group">
+                                    <input type="radio" name="operation" value="convert" class="hidden peer">
+                                    <div class="bg-gray-800 border border-gray-700 rounded-xl p-4 text-center peer-checked:bg-green-900/30 peer-checked:border-green-500 hover:scale-105 transition-all duration-300">
+                                        <div class="text-3xl mb-2 group-hover:animate-pulse">🔄</div>
+                                        <div class="font-bold text-lg mb-1 text-green-400">Convert Format</div>
+                                        <div class="text-gray-400 text-sm">Ubah format gambar</div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Scale Selection (for upscaling) -->
+                        <div id="scaleSelection" class="mb-6">
                             <h3 class="text-xl font-bold text-center mb-4 text-white">
                                 🔍 Pilih Skala Perbesaran
                             </h3>
@@ -349,12 +374,47 @@
                                 </label>
                             </div>
                         </div>
+
+                        <!-- Format Selection (for conversion) -->
+                        <div id="formatSelection" class="mb-6 hidden">
+                            <h3 class="text-xl font-bold text-center mb-4 text-white">
+                                📁 Pilih Format Output
+                            </h3>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <label class="cursor-pointer group">
+                                    <input type="radio" name="format" value="png" class="hidden peer">
+                                    <div class="bg-gray-800 border border-gray-700 rounded-xl p-4 text-center peer-checked:bg-purple-900/30 peer-checked:border-purple-500 hover:scale-105 transition-all duration-300">
+                                        <div class="text-3xl mb-2 group-hover:animate-pulse">🖼️</div>
+                                        <div class="font-bold text-lg mb-1 text-purple-400">PNG</div>
+                                        <div class="text-gray-400 text-sm">Lossless, Transparent</div>
+                                    </div>
+                                </label>
+                                <label class="cursor-pointer group">
+                                    <input type="radio" name="format" value="webp" class="hidden peer">
+                                    <div class="bg-gray-800 border border-gray-700 rounded-xl p-4 text-center peer-checked:bg-cyan-900/30 peer-checked:border-cyan-500 hover:scale-105 transition-all duration-300">
+                                        <div class="text-3xl mb-2 group-hover:animate-pulse">🌐</div>
+                                        <div class="font-bold text-lg mb-1 text-cyan-400">WebP</div>
+                                        <div class="text-gray-400 text-sm">Modern, Compressed</div>
+                                    </div>
+                                </label>
+                                <label class="cursor-pointer group">
+                                    <input type="radio" name="format" value="jpeg" class="hidden peer">
+                                    <div class="bg-gray-800 border border-gray-700 rounded-xl p-4 text-center peer-checked:bg-orange-900/30 peer-checked:border-orange-500 hover:scale-105 transition-all duration-300">
+                                        <div class="text-3xl mb-2 group-hover:animate-pulse">📷</div>
+                                        <div class="font-bold text-lg mb-1 text-orange-400">JPEG</div>
+                                        <div class="text-gray-400 text-sm">Universal, Small Size</div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                        
                         <p class="text-center mb-2 ">Note: untuk 8x hanya suport gambar maximal 1024 x 1024</p>
+
                         <!-- Process Button -->
                         <div class="text-center">
                             <button id="processBtn" class="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3 rounded-xl text-lg font-bold transform hover:scale-105 transition-all duration-300 shadow-xl">
                                 <span class="flex items-center justify-center gap-2">
-                                    🚀 <span>Start AI Upscaling</span>
+                                    🚀 <span id="processBtnText">Start AI Upscaling</span>
                                 </span>
                             </button>
                         </div>
@@ -409,10 +469,10 @@
                             </div>
                         </div>
                         
-                        <!-- Upscaled -->
+                        <!-- Processed -->
                         <div class="bg-black/20 rounded-xl p-4">
                             <h4 class="text-lg font-bold text-center mb-3 text-cyan-400">
-                                🎯 AI Upscaled
+                                🎯 <span id="resultTitle">AI Upscaled</span>
                             </h4>
                             <div class="text-center">
                                 <canvas id="resultCanvas" class="w-full rounded-lg shadow-xl border border-cyan-400/50"></canvas>
